@@ -42,9 +42,17 @@
 
 namespace Avoid {
 
+jsref_invalidator_fn jsref_invalidator;
+
+void register_jsref_invalidator(jsref_invalidator_fn fn)
+{
+    assert(fn != NULL);
+    jsref_invalidator = fn;
+}
 
 Router::Router(const unsigned int flags)
-    : visOrthogGraph(true),
+    : jsref(NULL),
+      visOrthogGraph(true),
       PartialTime(false),
       SimpleRouting(false),
       ClusteredRouting(true),
@@ -101,6 +109,13 @@ Router::Router(const unsigned int flags)
 
 Router::~Router()
 {
+    /* Invalidate reference inside JS object. */
+    assert(jsref_invalidator != NULL);
+    if (jsref != NULL) {
+        jsref_invalidator(jsref);
+        jsref = NULL;
+    }
+
     m_currently_calling_destructors = true;
 
     // Delete remaining connectors.

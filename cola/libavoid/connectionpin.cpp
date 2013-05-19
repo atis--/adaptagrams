@@ -39,7 +39,8 @@ ShapeConnectionPin::ShapeConnectionPin(ShapeRef *shape,
         const unsigned int classId, const double xPortionOffset,
         const double yPortionOffset, const double insideOffset, 
         const ConnDirFlags visDirs)
-    : m_shape(shape),
+    : jsref(NULL),
+      m_shape(shape),
       m_junction(NULL),
       m_class_id(classId),
       m_x_portion_offset(xPortionOffset),
@@ -90,7 +91,8 @@ ShapeConnectionPin::ShapeConnectionPin(ShapeRef *shape,
 
 ShapeConnectionPin::ShapeConnectionPin(JunctionRef *junction, 
         const unsigned int classId, const ConnDirFlags visDirs)
-    : m_shape(NULL),
+    : jsref(NULL),
+      m_shape(NULL),
       m_junction(junction),
       m_class_id(classId),
       m_x_portion_offset(0.0),
@@ -123,6 +125,14 @@ ShapeConnectionPin::ShapeConnectionPin(JunctionRef *junction,
 
 ShapeConnectionPin::~ShapeConnectionPin()
 {
+    /* Invalidate reference inside JS object. */
+    extern jsref_invalidator_fn jsref_invalidator;
+    assert(jsref_invalidator != NULL);
+    if (jsref != NULL) {
+        jsref_invalidator(jsref);
+        jsref = NULL;
+    }
+
     COLA_ASSERT(m_shape || m_junction);
     if (m_shape)
     {

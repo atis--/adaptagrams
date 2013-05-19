@@ -81,6 +81,8 @@ enum ShapeTransformationType
 class AVOID_EXPORT ShapeRef : public Obstacle
 {
     public:
+        void *jsref;   /* Javascript object reference. */
+
         //! @brief  Shape reference constructor.
         //!
         //! Creates a shape object reference, and adds it to the router

@@ -45,7 +45,8 @@ namespace Avoid {
 
     
 ConnRef::ConnRef(Router *router, const unsigned int id)
-    : m_router(router),
+    : jsref(NULL),
+      m_router(router),
       m_type(router->validConnType()),
       m_reroute_flag_ptr(NULL),
       m_needs_reroute_flag(true),
@@ -74,7 +75,8 @@ ConnRef::ConnRef(Router *router, const unsigned int id)
 
 ConnRef::ConnRef(Router *router, const ConnEnd& src, const ConnEnd& dst,
         const unsigned int id)
-    : m_router(router),
+    : jsref(NULL),
+      m_router(router),
       m_type(router->validConnType()),
       m_reroute_flag_ptr(NULL),
       m_needs_reroute_flag(true),
@@ -103,6 +105,14 @@ ConnRef::ConnRef(Router *router, const ConnEnd& src, const ConnEnd& dst,
 
 ConnRef::~ConnRef()
 {
+    /* Invalidate reference inside JS object. */
+    extern jsref_invalidator_fn jsref_invalidator;
+    assert(jsref_invalidator != NULL);
+    if (jsref != NULL) {
+        jsref_invalidator(jsref);
+        jsref = NULL;
+    }
+
     if (m_router->m_currently_calling_destructors == false)
     {
         err_printf("ERROR: ConnRef::~ConnRef() shouldn't be called directly.\n");

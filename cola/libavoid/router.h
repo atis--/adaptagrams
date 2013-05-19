@@ -45,6 +45,9 @@
 
 namespace Avoid {
 
+typedef void (*jsref_invalidator_fn)(void *p);
+void register_jsref_invalidator(jsref_invalidator_fn);
+
 // LineReps: Used for highlighting certain areas in debugging output.
 struct LineRep
 {
@@ -260,6 +263,8 @@ class TopologyAddonInterface
 //
 class AVOID_EXPORT Router {
     public:
+        void *jsref;   /* Javascript object reference. */
+
         //! @brief  Constructor for router instance.
         //!
         //! @param[in]  flags  One or more Avoid::RouterFlag options to 

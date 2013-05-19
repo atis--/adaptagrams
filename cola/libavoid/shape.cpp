@@ -37,7 +37,7 @@ namespace Avoid {
 
 
 ShapeRef::ShapeRef(Router *router, Polygon& ply, const unsigned int id)
-    : Obstacle(router, ply, id)
+    : Obstacle(router, ply, id), jsref(NULL)
 {
     m_router->addShape(this);
 }
@@ -45,6 +45,14 @@ ShapeRef::ShapeRef(Router *router, Polygon& ply, const unsigned int id)
 
 ShapeRef::~ShapeRef()
 {
+    /* Invalidate reference inside JS object. */
+    extern jsref_invalidator_fn jsref_invalidator;
+    assert(jsref_invalidator != NULL);
+    if (jsref != NULL) {
+        jsref_invalidator(jsref);
+        jsref = NULL;
+    }
+
     if (m_router->m_currently_calling_destructors == false)
     {
         err_printf("ERROR: ShapeRef::~ShapeRef() shouldn't be called directly.\n");

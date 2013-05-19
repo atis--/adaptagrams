@@ -71,6 +71,8 @@ class VertInf;
 class AVOID_EXPORT ShapeConnectionPin
 {
     public:
+        void *jsref;   /* Javascript object reference. */
+        
         //! @brief Constructs a ShapeConnectionPin at a specified position on a
         //!        parent shape.
         //!

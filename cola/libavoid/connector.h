@@ -131,6 +131,8 @@ class AVOID_EXPORT Checkpoint
 class AVOID_EXPORT ConnRef
 {
     public:
+        void *jsref;   /* Javascript object reference. */
+        
         //! @brief Constructs a connector with no endpoints specified.
         //!
         //! The constructor requires a valid Router instance.  This router
