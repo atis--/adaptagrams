@@ -33,7 +33,7 @@
 
 #else // Not NDEBUG
 
-  #ifdef _MSC_VER
+  #if 0
     // Compiling with Microsoft Visual C++ compiler
 
     // Prevent inclusion of min and max macros.
