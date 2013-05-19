@@ -280,6 +280,13 @@ void Router::addShape(ShapeRef *shape)
 
 void Router::deleteShape(ShapeRef *shape)
 {
+    /* Invalidate reference inside JS object. */
+    assert(jsref_invalidator != NULL);
+    if (shape->jsref != NULL) {
+        jsref_invalidator(shape->jsref);
+        shape->jsref = NULL;
+    }
+
     // There shouldn't be add events events for the same shape already 
     // in the action list.
     // XXX: Possibly we could handle this by ordering them intelligently.
@@ -311,6 +318,13 @@ void Router::deleteShape(ShapeRef *shape)
 
 void Router::deleteConnector(ConnRef *connector)
 {
+    /* Invalidate reference inside JS object. */
+    assert(jsref_invalidator != NULL);
+    if (connector->jsref != NULL) {
+        jsref_invalidator(connector->jsref);
+        connector->jsref = NULL;
+    }
+    
     m_currently_calling_destructors = true;
     delete connector;
     m_currently_calling_destructors = false;
